@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <style>
+        body {
+            background-size: cover;
+            background-repeat: no-repeat;
+            transition: background-image 1s ease;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+            padding-top: 50px;
+            background-color: rgba(255, 255, 255, 0.131);
+            font-size: 20px;
+            border-radius: 25px;
+            padding: 100px;
+        }
+
+        #weather-info {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Weather App</h1>
+        <label for="city-select">Select a City:</label>
+        <select id="city-select">
+            <option value="Mashhad">Mashhad</option>
+            <option value="Tehran">Tehran</option>
+          
+            <option value="London">London</option>
+        </select>
+        <div id="weather-info"></div>
+    </div>
+
+    <script>
+        const apiKey = '76f9ff5e8b53db701e6be65c276993b9';
+        const weatherInfo = document.getElementById('weather-info');
+        const citySelect = document.getElementById('city-select');
+
+        function fetchWeather(city) {
+            const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    const weather = data.weather[0].main;
+                    const temperature = data.main.temp;
+
+                    weatherInfo.innerHTML = `
+                        <h2>${city}</h2>
+                        <p>Weather: ${weather}</p>
+                        <p>Temperature: ${temperature}°C</p>
+                    `;
+
+                    // Change background image based on weather condition
+                    let backgroundImageUrl;
+                    switch (weather) {
+                        case 'Clear':
+                            backgroundImageUrl = 'https://clarksvillenow.sagacom.com/files/2020/11/shutterstock_286242953-1200x768.jpg';
+                            break;
+                        case 'Clouds':
+                            backgroundImageUrl = 'https://roozaneh.net/wp-content/uploads/2019/10/%D9%87%D9%88%D8%A7%DB%8C-%D8%A7%D8%A8%D8%B1%DB%8C-2.jpg';
+                            break;
+                        case 'Rain':
+                            backgroundImageUrl = 'https://i0.wp.com/eos.org/wp-content/uploads/2022/01/rain.jpg?fit=1200%2C675&ssl=1';
+                            break;
+                            case 'Rain':
+                        case 'Drizzle':
+                            backgroundImageUrl = 'rainy-background.jpg';
+                            break;
+                        case 'Thunderstorm':
+                            backgroundImageUrl = 'https://images.newscientist.com/wp-content/uploads/2024/02/06103007/SEI_189745988.jpg?width=1200';
+                            break;
+                        case 'Snow':
+                            backgroundImageUrl = 'snow-background.jpg';
+                            break;
+                        default:
+                            backgroundImageUrl = 'default-background.jpg';
+                    }
+                    document.body.style.backgroundImage = `url('${backgroundImageUrl}')`;
+                })
+                .catch(error => console.log('Error fetching weather data:', error));
+        }
+
+        citySelect.addEventListener('change', () => {
+            const selectedCity = citySelect.value;
+            fetchWeather(selectedCity);
+        });
+
+        // Fetch initial weather data for Mashhad
+        fetchWeather('Mashhad');
+    </script>
+</body>
+</html>
